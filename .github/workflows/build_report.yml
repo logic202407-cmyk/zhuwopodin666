@@ -24,14 +24,14 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          curl -L \
-            -H "Authorization: Bearer $GH_TOKEN" \
-            -H "Accept: application/vnd.github+json" \
-            https://api.github.com/repos/logic202407-cmyk/zhuwopodin666/actions/artifacts/7585908522/zip \
-            -o base_report.zip
-          unzip -o base_report.zip
-          find . -name '*真实截图终稿.docx' -print
-          cp "$(find . -name '*真实截图终稿.docx' | head -n 1)" '校园电动车充电安全监测与自动断电设计_课程设计报告_真实截图终稿.docx'
+          rm -rf base_artifact
+          mkdir -p base_artifact
+          gh run download 27402170012 \
+            -R logic202407-cmyk/zhuwopodin666 \
+            -n word-report \
+            -D base_artifact
+          find base_artifact -name '*.docx' -print
+          cp "$(find base_artifact -name '*真实截图终稿.docx' | head -n 1)" '校园电动车充电安全监测与自动断电设计_课程设计报告_真实截图终稿.docx'
       - run: python patch_references.py
       - uses: actions/upload-artifact@v4
         with:
